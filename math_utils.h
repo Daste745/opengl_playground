@@ -10,7 +10,4 @@ namespace MathUtils {
     inline const float r(const vertex *v) { return (*v)[3]; };
     inline const float g(const vertex *v) { return (*v)[4]; };
     inline const float b(const vertex *v) { return (*v)[5]; };
-
-    const unsigned int getNbVertex(const vertex vertices[]);
-    const unsigned int getNbElements(const vertex vertices[]);
 }

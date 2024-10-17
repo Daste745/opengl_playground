@@ -81,10 +81,13 @@ int main(int argc, char **argv) {
 
     // Triangle vertices
     MathUtils::vertex vertices[3] = {
-        { 0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f},  // Top
+        { 0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f}, // Top
         { 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f}, // Right
-        {-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f} // Bottom left
+        {-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f}, // Bottom left
     };
+    const unsigned int vertexCount = sizeof(vertices) / sizeof(*vertices);
+    const unsigned int drawBufferSize = vertexCount * sizeof(MathUtils::vertex);
+
 
     // Vertex Buffer Object = VBO
     GLuint VBO = {};
@@ -96,7 +99,7 @@ int main(int argc, char **argv) {
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, MathUtils::getNbElements(vertices) * sizeof(float), vertices, GL_STATIC_DRAW | GL_MAP_READ_BIT);
+    glBufferData(GL_ARRAY_BUFFER, drawBufferSize, vertices, GL_STATIC_DRAW | GL_MAP_READ_BIT);
 
     // Vertex Arrays Object = VAO
     GLuint VAO = {};
@@ -146,7 +149,7 @@ int main(int argc, char **argv) {
         vertices[2][1] += offset;
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, MathUtils::getNbElements(vertices) * sizeof(float), vertices, GL_STATIC_DRAW | GL_MAP_READ_BIT);
+        glBufferData(GL_ARRAY_BUFFER, drawBufferSize, vertices, GL_STATIC_DRAW | GL_MAP_READ_BIT);
 
         tick++;
     }
