@@ -68,21 +68,21 @@ int main(int argc, char **argv) {
     info("OpenGL version: " << glGetString(GL_VERSION));
 
     // Init shaders
-    auto shader_utils = ShaderUtils::Program();
+    auto program = ShaderUtils::Program();
 
     auto vertexSource = readFile("shaders/vertex.glsl");
-    if (!shader_utils.registerShader(ShaderUtils::ShaderType::Vertex, vertexSource.c_str())) {
+    if (!program.registerShader(ShaderUtils::ShaderType::Vertex, vertexSource.c_str())) {
         glfwTerminate();
         return -1;
     }
 
     auto fragmentSource = readFile("shaders/fragment.glsl");
-    if (!shader_utils.registerShader(ShaderUtils::ShaderType::Fragment, fragmentSource.c_str())) {
+    if (!program.registerShader(ShaderUtils::ShaderType::Fragment, fragmentSource.c_str())) {
         glfwTerminate();
         return -1;
     }
 
-    if (!shader_utils.registerProgram()) {
+    if (!program.registerProgram()) {
         glfwTerminate();
         return -1;
     }
@@ -138,7 +138,7 @@ int main(int argc, char **argv) {
         glClearColor(0, 0, 0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shader_utils.getProgram().value());
+        glUseProgram(program.getProgram().value());
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 

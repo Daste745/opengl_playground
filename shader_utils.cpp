@@ -4,11 +4,9 @@
 #include <GLFW/glfw3.h>
 #endif
 
-// #include "logs.h" // Simple macros for DEBUG, INFO, ... messages
 #include "logs.h"
 #include "shader_utils.h"
 #include <optional>
-#include <iostream>
 
 namespace ShaderUtils {
     Program::Program() {}
@@ -69,14 +67,11 @@ namespace ShaderUtils {
             return false;
         }
 
-        const unsigned int vertexShaderValue = vertexShader.value();
-        const unsigned int fragmentShaderValue = fragmentShader.value();
-
         program = glCreateProgram();
         const unsigned int programValue = program.value();
 
-        glAttachShader(programValue, vertexShaderValue);
-        glAttachShader(programValue, fragmentShaderValue);
+        glAttachShader(programValue, vertexShader.value());
+        glAttachShader(programValue, fragmentShader.value());
         glLinkProgram(programValue);
 
         int success = {};
@@ -89,8 +84,8 @@ namespace ShaderUtils {
         }
 
         // We can now delete our vertex and fragment shaders
-        glDeleteShader(vertexShaderValue);
-        glDeleteShader(fragmentShaderValue);
+        glDeleteShader(vertexShader.value());
+        glDeleteShader(fragmentShader.value());
         glUseProgram(programValue);
         registered = true;
 
