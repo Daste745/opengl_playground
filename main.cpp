@@ -7,7 +7,7 @@
 
 #include "logs.h"
 #include "shader_utils.h"
-#include "math_utils.h"
+#include "vertex.h"
 #include <cstddef>
 
 const size_t WIDTH = 800;
@@ -80,13 +80,13 @@ int main(int argc, char **argv) {
     }
 
     // Triangle vertices
-    MathUtils::vertex vertices[3] = {
+    vertex vertices[3] = {
         { 0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f}, // Top
         { 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f}, // Right
         {-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f}, // Bottom left
     };
     const unsigned int vertexCount = sizeof(vertices) / sizeof(*vertices);
-    const unsigned int drawBufferSize = vertexCount * sizeof(MathUtils::vertex);
+    const unsigned int drawBufferSize = vertexCount * sizeof(vertex);
 
 
     // Vertex Buffer Object = VBO
@@ -107,11 +107,11 @@ int main(int argc, char **argv) {
     glBindVertexArray(VAO);
 
     // Specify position attribute -> 0 as offset
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, MathUtils::VERTEX_ELEMENTS_NB * sizeof(float), (GLvoid *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), (GLvoid *)0);
     glEnableVertexAttribArray(0);
 
     // Specify color attribute -> 3 as offset
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, MathUtils::VERTEX_ELEMENTS_NB * sizeof(float), (GLvoid *)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), (GLvoid *)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
