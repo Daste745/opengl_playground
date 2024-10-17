@@ -1,3 +1,4 @@
+#include <fstream>
 #ifdef __APPLE__
 // Defined before OpenGL and GLUT includes to avoid deprecation messages
 #define GL_SILENCE_DEPRECATION
@@ -37,6 +38,20 @@ GLFWwindow* initWindow() {
     return window;
 }
 
+std::string readFile(const char* path) {
+    auto stream = std::ifstream(path);
+
+    constexpr size_t read_size = 4096;
+    auto buf = std::string(read_size, '\0');
+    auto out = std::string();
+    while (stream.read(&buf[0], read_size)) {
+        out.append(buf, 0, stream.gcount());
+    }
+    out.append(buf, 0, stream.gcount());
+
+    return out;
+}
+
 int main(int argc, char **argv) {
     if (!glfwInit()) {
         error("Could not start GLFW3");
@@ -55,32 +70,14 @@ int main(int argc, char **argv) {
     // Init shaders
     auto shader_utils = ShaderUtils::Program();
 
-    const char *vertexSource = R"GLSL(
-        #version 410 core
-        layout (location = 0) in vec3 vertexPosition;
-        layout (location = 1) in vec3 vertexColor;
-        layout (location = 0) out vec3 fragmentColor;
-
-        void main() {
-            gl_Position = vec4(vertexPosition, 1.0); // `w` is used for perspective
-            fragmentColor = vertexColor;
-        }
-    )GLSL";
-    if (!shader_utils.registerShader(ShaderUtils::ShaderType::Vertex, vertexSource)) {
+    auto vertexSource = readFile("shaders/vertex.glsl");
+    if (!shader_utils.registerShader(ShaderUtils::ShaderType::Vertex, vertexSource.c_str())) {
         glfwTerminate();
         return -1;
     }
 
-    const char *fragmentSource = R"GLSL(
-        #version 410 core
-        layout (location = 0) in vec3 fragmentColor;
-        out vec4 finalColor;
-
-        void main() {
-            finalColor = vec4(fragmentColor, 1.0);
-        }
-    )GLSL";
-    if (!shader_utils.registerShader(ShaderUtils::ShaderType::Fragment, fragmentSource)) {
+    auto fragmentSource = readFile("shaders/fragment.glsl");
+    if (!shader_utils.registerShader(ShaderUtils::ShaderType::Fragment, fragmentSource.c_str())) {
         glfwTerminate();
         return -1;
     }
