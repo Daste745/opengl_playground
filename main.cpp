@@ -1,15 +1,15 @@
-#include <fstream>
 #ifdef __APPLE__
-// Defined before OpenGL and GLUT includes to avoid deprecation messages
-#define GL_SILENCE_DEPRECATION
 #define GLFW_INCLUDE_GLCOREARB
-#include <GLFW/glfw3.h>
 #endif
+
+#include <fstream>
+#include <cstddef>
+
+#include <GLFW/glfw3.h>
 
 #include "logs.h"
 #include "shader_utils.h"
 #include "vertex.h"
-#include <cstddef>
 
 const size_t WIDTH = 800;
 const size_t HEIGHT = 600;

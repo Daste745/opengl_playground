@@ -1,12 +1,9 @@
-#ifdef __APPLE__
-/* Defined before OpenGL and GLUT includes to avoid deprecation messages */
-#define GL_SILENCE_DEPRECATION
+#include <optional>
+
 #include <GLFW/glfw3.h>
-#endif
 
 #include "logs.h"
 #include "shader_utils.h"
-#include <optional>
 
 namespace ShaderUtils {
     Program::Program() {}

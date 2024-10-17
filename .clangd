@@ -2,3 +2,4 @@ CompileFlags:
     Add:
       - -std=c++17
       - -Wall
+      - -DGL_SILENCE_DEPRECATION
