@@ -19,24 +19,35 @@ static void keyCallback(GLFWwindow *window, int key, int, int action, int) {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
+GLFWwindow* initWindow() {
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+
+    auto window = glfwCreateWindow(WIDTH, HEIGHT, WINDOW_TITLE, NULL, NULL);
+    if (!window) {
+        error("Could not open window with GLFW3");
+        glfwTerminate();
+        return nullptr;
+    }
+
+    glfwSetKeyCallback(window, keyCallback);
+    glfwMakeContextCurrent(window);
+    glViewport(0, 0, WIDTH, HEIGHT);
+
+    return window;
+}
+
 int main(int argc, char **argv) {
     if (!glfwInit()) {
         error("Could not start GLFW3");
         return -1;
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-    auto window = glfwCreateWindow(WIDTH, HEIGHT, WINDOW_TITLE, NULL, NULL);
+    auto window = initWindow();
     if (!window) {
-        error("Could not open window with GLFW3");
         glfwTerminate();
         return -1;
     }
-
-    glfwSetKeyCallback(window, keyCallback);
-    glfwMakeContextCurrent(window);
-    glViewport(0, 0, WIDTH, HEIGHT);
 
     info("Renderer: " << glGetString(GL_RENDERER));
     info("OpenGL version: " << glGetString(GL_VERSION));
