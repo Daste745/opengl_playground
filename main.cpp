@@ -8,8 +8,8 @@
 #include <GLFW/glfw3.h>
 
 #include "logs.h"
-#include "shader_utils.h"
 #include "vertex.h"
+#include "program.h"
 
 const size_t WIDTH = 800;
 const size_t HEIGHT = 600;
@@ -67,17 +67,16 @@ int main(int argc, char **argv) {
     info("Renderer: " << glGetString(GL_RENDERER));
     info("OpenGL version: " << glGetString(GL_VERSION));
 
-    // Init shaders
-    auto program = ShaderUtils::Program();
-
+    // Register program and shaders
+    auto program = Program();
     auto vertexSource = readFile("shaders/vertex.glsl");
-    if (!program.registerShader(ShaderUtils::ShaderType::Vertex, vertexSource.c_str())) {
+    if (!program.registerShader(vertexSource.c_str(), Program::ShaderType::Vertex)) {
         glfwTerminate();
         return -1;
     }
 
     auto fragmentSource = readFile("shaders/fragment.glsl");
-    if (!program.registerShader(ShaderUtils::ShaderType::Fragment, fragmentSource.c_str())) {
+    if (!program.registerShader(fragmentSource.c_str(), Program::ShaderType::Fragment)) {
         glfwTerminate();
         return -1;
     }
@@ -138,7 +137,7 @@ int main(int argc, char **argv) {
         glClearColor(0, 0, 0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(program.getProgram().value());
+        glUseProgram(program.getId());
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
