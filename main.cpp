@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <cstddef>
+#include <cmath>
 
 #include <GLFW/glfw3.h>
 
@@ -12,7 +13,7 @@
 #include "program.h"
 
 const size_t WIDTH = 800;
-const size_t HEIGHT = 600;
+const size_t HEIGHT = 800;
 const char* WINDOW_TITLE = "Test OpenGL";
 
 static void keyCallback(GLFWwindow *window, int key, int, int action, int) {
@@ -123,16 +124,7 @@ int main(int argc, char **argv) {
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    int tick = 0;
-    float perTick = 0.01f;
-    float rate = 30.f;
-    vertices[0][0] -= perTick * rate;
-    vertices[1][0] -= perTick * rate;
-    vertices[2][0] -= perTick * rate;
-    vertices[0][1] -= perTick * rate;
-    vertices[1][1] -= perTick * rate;
-    vertices[2][1] -= perTick * rate;
-
+    unsigned int tick = 0;
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0, 0, 0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -145,15 +137,24 @@ int main(int argc, char **argv) {
 
         glfwSwapBuffers(window);
 
-        float offset = perTick * sin(tick / rate);
-        // x
-        vertices[0][0] += offset;
-        vertices[1][0] += offset;
-        vertices[2][0] += offset;
-        // y
-        vertices[0][1] += offset;
-        vertices[1][1] += offset;
-        vertices[2][1] += offset;
+        for (int i = 0; i <= 2; i++) {
+            // Rotate the triangle
+            unsigned int rotationOffset = (360 / 3) * i;
+            float degrees = (tick + rotationOffset) % 360;
+            auto radians = degrees * M_PI / 180;
+            float distanceFromCenter = 0.5;
+            vertices[i][0] = distanceFromCenter * sin(radians);
+            vertices[i][1] = distanceFromCenter * cos(radians);
+
+            // Color shift, kinda working
+            float cyclePercent = (-cos(radians) + 1) / 2;
+            for (int j = 0; j <= 2; j++) {
+                float colorAmount = ((i + j + 1) % 3);
+                vertices[i][3 + j] = (1.0f / 3) * colorAmount * 1.0f * cyclePercent;
+            }
+
+            debug('[' << i << "] (" << vertices[i][3] << ", " << vertices[i][4] << ", " << vertices[i][5] << ")");
+        }
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, drawBufferSize, vertices, GL_STATIC_DRAW | GL_MAP_READ_BIT);
