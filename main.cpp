@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
     }
 
     // Triangle vertices
-    vertex vertices[3] = {
+    vertex vertices[] = {
         { 0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f}, // Top
         { 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f}, // Right
         {-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f}, // Bottom left
@@ -139,7 +139,7 @@ int main(int argc, char **argv) {
 
         glUseProgram(program.getId());
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
 
         glfwPollEvents();
 
