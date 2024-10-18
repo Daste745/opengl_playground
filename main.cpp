@@ -5,6 +5,8 @@
 #include <fstream>
 #include <cstddef>
 #include <cmath>
+#include <chrono>
+#include <thread>
 
 #include <GLFW/glfw3.h>
 
@@ -15,6 +17,7 @@
 const size_t WIDTH = 800;
 const size_t HEIGHT = 800;
 const char* WINDOW_TITLE = "Test OpenGL";
+const unsigned int TARGET_FRAMERATE = 60;
 
 static void keyCallback(GLFWwindow *window, int key, int, int action, int) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -124,8 +127,10 @@ int main(int argc, char **argv) {
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    unsigned int tick = 0;
+    unsigned int frame = 0;
     while (!glfwWindowShouldClose(window)) {
+        auto start = std::chrono::high_resolution_clock::now();
+
         glClearColor(0, 0, 0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -140,7 +145,7 @@ int main(int argc, char **argv) {
         for (int i = 0; i <= 2; i++) {
             // Rotate the triangle
             unsigned int rotationOffset = (360 / 3) * i;
-            float degrees = (tick + rotationOffset) % 360;
+            float degrees = (frame + rotationOffset) % 360;
             auto radians = degrees * M_PI / 180;
             float distanceFromCenter = 0.5;
             vertices[i][0] = distanceFromCenter * sin(radians);
@@ -153,13 +158,27 @@ int main(int argc, char **argv) {
                 vertices[i][3 + j] = (1.0f / 3) * colorAmount * 1.0f * cyclePercent;
             }
 
-            debug('[' << i << "] (" << vertices[i][3] << ", " << vertices[i][4] << ", " << vertices[i][5] << ")");
+            // debug('[' << i << "] (" << vertices[i][3] << ", " << vertices[i][4] << ", " << vertices[i][5] << ")");
         }
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, drawBufferSize, vertices, GL_STATIC_DRAW | GL_MAP_READ_BIT);
 
-        tick++;
+        using std::chrono::duration_cast;
+        using std::chrono::microseconds;
+        using std::chrono::milliseconds;
+
+        auto frameTime = std::chrono::high_resolution_clock::now() - start;
+        auto targetFrameTime = milliseconds(1000) / TARGET_FRAMERATE;
+        auto remaining = targetFrameTime - frameTime;
+
+        if (remaining.count() > 0) {
+            std::this_thread::sleep_for(remaining);
+        } else {
+            warning("Frame " << frame << " took longer than " << duration_cast<milliseconds>(targetFrameTime).count() << "ms")
+        }
+
+        frame++;
     }
 
     glDeleteBuffers(1, &VBO);
