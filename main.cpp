@@ -170,12 +170,14 @@ int main(int argc, char **argv) {
 
         auto frameTime = std::chrono::high_resolution_clock::now() - start;
         auto targetFrameTime = milliseconds(1000) / TARGET_FRAMERATE;
-        auto remaining = targetFrameTime - frameTime;
-
-        if (remaining.count() > 0) {
-            std::this_thread::sleep_for(remaining);
+        if (frameTime < targetFrameTime) {
+            std::this_thread::sleep_for(targetFrameTime - frameTime);
         } else {
-            warning("Frame " << frame << " took longer than " << duration_cast<milliseconds>(targetFrameTime).count() << "ms")
+            warning(
+                "Frame took longer than "
+                << duration_cast<milliseconds>(targetFrameTime).count() << "ms: "
+                << duration_cast<microseconds>(frameTime).count() / 1000.0f << "ms"
+            );
         }
 
         frame++;
