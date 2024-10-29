@@ -1,5 +1,8 @@
 #ifdef __APPLE__
 #define GLFW_INCLUDE_GLCOREARB
+#else // __APPLE__
+#define GLFW_INCLUDE_NONE
+#include <GL/glew.h>
 #endif
 
 #include <fstream>
@@ -58,7 +61,7 @@ std::string readFile(const char* path) {
 
 int main(int argc, char **argv) {
     if (!glfwInit()) {
-        error("Could not start GLFW3");
+        error("Could not initialize GLFW3");
         return -1;
     }
 
@@ -67,6 +70,16 @@ int main(int argc, char **argv) {
         glfwTerminate();
         return -1;
     }
+
+#if defined(__glew_h__)
+    glewExperimental = GL_TRUE;
+    auto glew_init_result = glewInit();
+    if (glew_init_result != GLEW_OK) {
+        error("Could not initialize GLEW: " << glewGetErrorString(glew_init_result));
+        glfwTerminate();
+        return -1;
+    }
+#endif
 
     info("Renderer: " << glGetString(GL_RENDERER));
     info("OpenGL version: " << glGetString(GL_VERSION));
