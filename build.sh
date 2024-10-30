@@ -1,12 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-NAME="main"
-
-mkdir -p build
-
-SOURCES="$(find . -name '*.cpp')"
-
 OS="$(uname)"
 if [ "$OS" == "Darwin" ]; then
     CFLAGS="$(pkg-config --cflags glfw3 glew) -std=c++17 -Wall -DGL_SILENCE_DEPRECATION"
@@ -19,13 +13,12 @@ else
     exit 1
 fi
 
-EXECUTABLE="build/$NAME"
+SOURCES="$(find . -name '*.cpp')"
 
+mkdir -p build
 set -x
 g++ \
     $CFLAGS \
     $SOURCES \
-    -o "$EXECUTABLE" \
+    -o "build/main" \
     $LIBS
-
-"$EXECUTABLE"
