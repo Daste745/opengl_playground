@@ -1,16 +1,10 @@
-#ifdef __APPLE__
-#define GLFW_INCLUDE_GLCOREARB
-#else // __APPLE__
-#define GLFW_INCLUDE_NONE
-#include <GL/glew.h>
-#endif
-
 #include <fstream>
 #include <cstddef>
 #include <cmath>
 #include <chrono>
 #include <thread>
 
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include "logs.h"
@@ -71,7 +65,6 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-#if defined(__glew_h__)
     glewExperimental = GL_TRUE;
     auto glew_init_result = glewInit();
     if (glew_init_result != GLEW_OK) {
@@ -79,7 +72,6 @@ int main(int argc, char **argv) {
         glfwTerminate();
         return -1;
     }
-#endif
 
     info("Renderer: " << glGetString(GL_RENDERER));
     info("OpenGL version: " << glGetString(GL_VERSION));

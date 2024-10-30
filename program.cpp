@@ -1,10 +1,4 @@
-#ifdef __APPLE__
-#define GLFW_INCLUDE_GLCOREARB
-#else // __APPLE__
-#define GLFW_INCLUDE_NONE
 #include <GL/glew.h>
-#endif
-
 #include <GLFW/glfw3.h>
 
 #include "program.h"
