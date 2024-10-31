@@ -4,7 +4,7 @@
 #include <chrono>
 #include <thread>
 
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include "logs.h"
@@ -24,6 +24,7 @@ static void keyCallback(GLFWwindow *window, int key, int, int action, int) {
 GLFWwindow* initWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     auto window = glfwCreateWindow(WIDTH, HEIGHT, WINDOW_TITLE, NULL, NULL);
     if (!window) {
@@ -34,7 +35,6 @@ GLFWwindow* initWindow() {
 
     glfwSetKeyCallback(window, keyCallback);
     glfwMakeContextCurrent(window);
-    glViewport(0, 0, WIDTH, HEIGHT);
 
     return window;
 }
@@ -65,13 +65,12 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    glewExperimental = GL_TRUE;
-    auto glew_init_result = glewInit();
-    if (glew_init_result != GLEW_OK) {
-        error("Could not initialize GLEW: " << glewGetErrorString(glew_init_result));
-        glfwTerminate();
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        error("Could not initialize GLAD");
         return -1;
     }
+
+    glViewport(0, 0, WIDTH, HEIGHT);
 
     info("Renderer: " << glGetString(GL_RENDERER));
     info("OpenGL version: " << glGetString(GL_VERSION));
