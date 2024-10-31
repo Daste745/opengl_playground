@@ -53,7 +53,7 @@ std::string readFile(const char* path) {
     return out;
 }
 
-int main(int argc, char **argv) {
+int main() {
     if (!glfwInit()) {
         error("Could not initialize GLFW3");
         return -1;
