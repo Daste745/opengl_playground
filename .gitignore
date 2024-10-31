@@ -2,3 +2,16 @@ build/
 .cache/
 compile_commands.json
 
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+
+.ninja_deps
+.ninja_log
+build.ninja
+
+*.a
+*.o
+*.so
+*.dylib
+*.dll
