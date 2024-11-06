@@ -2,17 +2,17 @@ add_subdirectory(glad)
 add_subdirectory(glfw)
 
 set(IMGUI_SOURCES
-    deps/imgui/imgui.cpp
-    deps/imgui/imgui_demo.cpp
-    deps/imgui/imgui_draw.cpp
-    deps/imgui/imgui_tables.cpp
-    deps/imgui/imgui_widgets.cpp
-    deps/imgui/backends/imgui_impl_glfw.cpp
-    deps/imgui/backends/imgui_impl_opengl3.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_demo.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_draw.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_tables.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_widgets.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/imgui_impl_glfw.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/imgui_impl_opengl3.cpp
     PARENT_SCOPE
 )
 set(IMGUI_INCLUDE_DIRS
-    deps/imgui
-    deps/imgui/backends
+    ${CMAKE_CURRENT_SOURCE_DIR}/imgui
+    ${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends
     PARENT_SCOPE
 )
