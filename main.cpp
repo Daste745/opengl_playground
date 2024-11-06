@@ -4,6 +4,9 @@
 #include <chrono>
 #include <thread>
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -75,6 +78,14 @@ int main() {
     info("Renderer: " << glGetString(GL_RENDERER));
     info("OpenGL version: " << glGetString(GL_VERSION));
 
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init();
+    info("ImGui version: "<< ImGui::GetVersion());
+
     // Register program and shaders
     auto program = Program();
     auto vertexSource = readFile("shaders/vertex.glsl");
@@ -135,16 +146,19 @@ int main() {
     while (!glfwWindowShouldClose(window)) {
         auto start = std::chrono::high_resolution_clock::now();
 
+        glfwPollEvents();
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        ImGui::ShowDemoWindow(); // Show demo window! :)
+
         glClearColor(0, 0, 0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(program.getId());
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-
-        glfwPollEvents();
-
-        glfwSwapBuffers(window);
 
         for (int i = 0; i <= 2; i++) {
             // Rotate the triangle
@@ -168,6 +182,11 @@ int main() {
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, drawBufferSize, vertices, GL_STATIC_DRAW | GL_MAP_READ_BIT);
 
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        glfwSwapBuffers(window);
+
         using std::chrono::duration_cast;
         using std::chrono::microseconds;
         using std::chrono::milliseconds;
@@ -186,6 +205,10 @@ int main() {
 
         frame++;
     }
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     glDeleteBuffers(1, &VBO);
     glDeleteVertexArrays(1, &VAO);
