@@ -42,6 +42,15 @@ GLFWwindow* initWindow() {
     return window;
 }
 
+void initImGui(GLFWwindow* window) {
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init();
+}
+
 std::string readFile(const char* path) {
     auto stream = std::ifstream(path);
 
@@ -73,17 +82,12 @@ int main() {
         return -1;
     }
 
+    initImGui(window);
+
     glViewport(0, 0, WIDTH, HEIGHT);
 
     info("Renderer: " << glGetString(GL_RENDERER));
     info("OpenGL version: " << glGetString(GL_VERSION));
-
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init();
     info("ImGui version: "<< ImGui::GetVersion());
 
     // Register program and shaders
